@@ -8,8 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// TODO: respond with proper files
-// TODO: show file download and catch errors if any
 // TODO: add save functionality
 
 app.use(cors());
