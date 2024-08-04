@@ -19,6 +19,7 @@ app.post("/generate", async (req, res) => {
   const doc = createDocx(req.body);
   const buffer = await Packer.toBuffer(doc);
   const filePath = `out/${uuidv4()}.docx`;
+  if (!fs.existsSync("out")) fs.mkdirSync("out");
   fs.writeFileSync(filePath, buffer);
   res.download(filePath);
 });
