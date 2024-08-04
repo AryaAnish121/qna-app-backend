@@ -1,7 +1,5 @@
-import * as fs from "fs";
 import {
   Document,
-  Packer,
   Paragraph,
   TextRun,
   LevelFormat,
@@ -9,21 +7,24 @@ import {
   convertInchesToTwip,
 } from "docx";
 
-// TODO: add marks
-// TODO: add match the following
-
 const createDocx = ({ data, studyingClass, subject, term }) => {
   const questions = data.flatMap((question) => {
-    const options = question.options.map((option) => {
-      return new Paragraph({
-        style: "optionStyle",
-        text: option,
-        numbering: {
-          level: 1,
-          reference: "questionNumbering",
-        },
-      });
-    });
+    const markSpaces = " ".repeat(118 - question.title.length * 1.4 - 4);
+
+    const options =
+      question.type === "mcq/fitb/mqna/mtf"
+        ? question.options.map((option) => {
+            return new Paragraph({
+              style: "optionStyle",
+              text: option.replace("<MTFSpace>", " ".repeat(35)),
+              numbering: {
+                level: 1,
+                reference: "questionNumbering",
+              },
+            });
+          })
+        : [];
+
     return [
       new Paragraph({
         style: "questionStyle",
@@ -33,7 +34,7 @@ const createDocx = ({ data, studyingClass, subject, term }) => {
         },
         children: [
           new TextRun({
-            text: `${question.title}`,
+            text: `${question.title} ${markSpaces} (${question.marks})`,
             bold: true,
           }),
         ],
@@ -232,10 +233,7 @@ const createDocx = ({ data, studyingClass, subject, term }) => {
     },
   });
 
-  // Used to export the file into a .docx file
-  Packer.toBuffer(doc).then((buffer) => {
-    fs.writeFileSync("My Document.docx", buffer);
-  });
+  return doc;
 };
 
 export default createDocx;
