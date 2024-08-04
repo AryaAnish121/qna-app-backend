@@ -7,8 +7,6 @@ import {
   convertInchesToTwip,
 } from "docx";
 
-// TODO: add adash
-
 const createDocx = ({ data, studyingClass, subject, term }) => {
   const questions = data.flatMap((question) => {
     const markSpaces = " ".repeat(118 - question.title.length * 1.4 - 4);
